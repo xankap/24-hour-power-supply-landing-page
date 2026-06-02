@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>24HR Power Supply With Solar | Agwu Chukwudi</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+:root {
+  --navy: #0B132B;
+  --navy-mid: #1C2E4A;
+  --gold: #F4A261;
+  --amber: #E76F51;
+  --white: #FFFFFF;
+  --offwhite: #F8F9FA;
+  --gray-soft: #F1F3F5;
+  --gray-mid: #ADB5BD;
+  --gray-text: #6C757D;
+  --dark-text: #1A1A2E;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', sans-serif;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-sm: 0 2px 12px rgba(11,19,43,0.07);
+  --shadow-md: 0 8px 32px rgba(11,19,43,0.11);
+  --shadow-lg: 0 20px 60px rgba(11,19,43,0.16);
+  --shadow-book: -12px 16px 40px rgba(11,19,43,0.32), 4px 4px 0 rgba(244,162,97,0.18);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  color: var(--dark-text);
+  background: var(--white);
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ─── ANNOUNCEMENT BAR ─── */
+.announce-bar {
+  background: var(--navy);
+  padding: 10px 24px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.announce-bar p { color: rgba(255,255,255,0.92); font-size: 13px; letter-spacing: 0.04em; margin: 0; font-weight: 400; }
+.announce-bar span { color: var(--gold); font-weight: 600; }
+.announce-timer {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(244,162,97,0.15); border: 1px solid rgba(244,162,97,0.3);
+  padding: 2px 12px; border-radius: 20px; margin-left: 8px;
+  font-size: 12px; color: var(--gold); font-weight: 600; letter-spacing: 0.06em;
+}
+
+/* ─── HERO ─── */
+.hero-section {
+  background: var(--white);
+  padding: 80px 0 60px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-section::before {
+  content: ''; position: absolute; top: -120px; right: -120px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(244,162,97,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.pre-headline {
+  font-family: var(--font-body); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold);
+  display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px;
+}
+.pre-headline::before { content: ''; display: block; width: 32px; height: 1.5px; background: var(--gold); }
+.hero-heading {
+  font-family: var(--font-display); font-size: clamp(36px, 5vw, 62px);
+  font-weight: 700; line-height: 1.08; color: var(--navy);
+  letter-spacing: -0.01em; margin-bottom: 24px;
+}
+.hero-heading em { font-style: italic; color: var(--amber); }
+.hero-subhead { font-size: 17px; color: var(--gray-text); line-height: 1.75; max-width: 480px; margin-bottom: 36px; }
+
+/* ─── BUTTONS ─── */
+.btn-solar-primary {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+  color: var(--white); border: none; padding: 15px 32px; border-radius: 4px;
+  font-family: var(--font-body); font-size: 15px; font-weight: 600;
+  letter-spacing: 0.04em; cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+  display: inline-flex; align-items: center; gap: 10px;
+  text-decoration: none; box-shadow: 0 4px 20px rgba(231,111,81,0.38);
+}
+.btn-solar-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 30px rgba(231,111,81,0.50); color: var(--white); }
+.btn-solar-outline {
+  background: transparent; color: var(--navy); border: 1.5px solid rgba(11,19,43,0.25);
+  padding: 14px 28px; border-radius: 4px; font-family: var(--font-body);
+  font-size: 15px; font-weight: 500; cursor: pointer;
+  transition: all var(--transition); display: inline-flex; align-items: center;
+  gap: 8px; text-decoration: none; letter-spacing: 0.02em;
+}
+.btn-solar-outline:hover { border-color: var(--navy); background: rgba(11,19,43,0.04); color: var(--navy); transform: translateY(-1px); }
+
+/* ─── BOOK COVER ─── */
+.book-cover-wrap { position: relative; display: flex; align-items: center; justify-content: center; padding: 20px 0; }
+.book-stage { position: relative; width: 300px; max-width: 100%; }
+.book-main {
+  width: 100%; border-radius: 3px 12px 12px 3px; box-shadow: var(--shadow-book);
+  position: relative; z-index: 2; background: var(--navy); overflow: hidden; aspect-ratio: 3/4;
+}
+.book-spine {
+  position: absolute; left: -14px; top: 6px; bottom: 6px; width: 14px;
+  background: linear-gradient(135deg, #0d1b35 0%, #1a2d50 100%);
+  border-radius: 2px 0 0 2px; z-index: 1;
+}
+.book-cover-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;/* opacity: 0.4; mix-blend-mode: luminosity;*/ }
+.book-cover-content {
+  position: relative; z-index: 3; padding: 28px 24px 24px;
+  height: 100%; display: flex; flex-direction: column; justify-content: space-between;
+}
+.book-eyebrow {
+  font-family: var(--font-body); font-size: 9px; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--gold);
+  border-bottom: 1px solid rgba(244,162,97,0.35); padding-bottom: 8px;
+}
+.book-title-cover {
+  font-family: var(--font-display); font-size: 26px; font-weight: 700;
+  color: var(--white); line-height: 1.15; margin: auto 0; padding: 16px 0;
+}
+.book-title-cover span { color: var(--gold); font-style: italic; }
+.book-subtitle-cover {
+  font-family: var(--font-body); font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: rgba(255,255,255,0.60); margin-top: 8px;
+}
+.book-author-cover {
+  font-family: var(--font-display); font-size: 13px; font-style: italic;
+  color: rgba(255,255,255,0.80); border-top: 1px solid rgba(255,255,255,0.15); padding-top: 12px;
+}
+.book-badge-cover {
+  position: absolute; top: -16px; right: -16px; width: 72px; height: 72px;
+  background: linear-gradient(135deg, var(--gold), var(--amber)); border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: 0 4px 18px rgba(231,111,81,0.45); z-index: 5; text-align: center;
+}
+.book-badge-cover .badge-top { font-size: 8px; font-weight: 700; color: var(--white); letter-spacing: 0.08em; text-transform: uppercase; }
+.book-badge-cover .badge-mid { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--white); line-height: 1.1; }
+.book-badge-cover .badge-bot { font-size: 7.5px; font-weight: 600; color: rgba(255,255,255,0.9); letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* ─── VIDEO SECTION ─── */
+.video-section { background: var(--gray-soft); padding: 80px 0; }
+.video-wrapper {
+  max-width: 800px; margin: 0 auto; border-radius: 10px; overflow: hidden;
+  box-shadow: 0 24px 60px rgba(11,19,43,0.18); position: relative;
+  background: #000; aspect-ratio: 16/9;
+}
+.video-wrapper iframe { width: 100%; height: 100%; border: none; display: block; }
+.video-placeholder {
+  width: 100%; height: 100%; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; background: var(--navy);
+  cursor: pointer; transition: background var(--transition);
+}
+.video-placeholder:hover { background: var(--navy-mid); }
+.play-btn {
+  width: 72px; height: 72px; background: linear-gradient(135deg, var(--gold), var(--amber));
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px; box-shadow: 0 0 0 12px rgba(244,162,97,0.15);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.video-placeholder:hover .play-btn { transform: scale(1.08); box-shadow: 0 0 0 18px rgba(244,162,97,0.12); }
+.play-btn i { color: var(--white); font-size: 26px; margin-left: 4px; }
+.video-caption { color: rgba(255,255,255,0.70); font-size: 14px; letter-spacing: 0.04em; }
+
+/* ─── SECTION LABELS ─── */
+.section-eyebrow {
+  font-family: var(--font-body); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold);
+  display: inline-flex; align-items: center; gap: 10px; margin-bottom: 16px;
+}
+.section-eyebrow::before { content: ''; display: block; width: 28px; height: 1.5px; background: var(--gold); }
+.section-heading {
+  font-family: var(--font-display); font-size: clamp(28px, 3.5vw, 44px);
+  font-weight: 700; color: var(--navy); line-height: 1.2; margin-bottom: 16px;
+}
+.section-heading em { font-style: italic; color: var(--amber); }
+.section-sub { font-size: 16px; color: var(--gray-text); max-width: 540px; margin: 0 auto 56px; }
+
+/* ─── AUTHOR ─── */
+.author-section { background: var(--navy); padding: 90px 0; position: relative; overflow: hidden; }
+.author-section::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: url('https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&q=60') center/cover no-repeat;
+  opacity: 0.07;
+}
+.author-photo-wrap { position: relative; display: inline-block; }
+.author-photo { width: 260px; height: 320px; object-fit: cover; border-radius: 6px; position: relative; z-index: 2; box-shadow: var(--shadow-lg); }
+.author-photo-frame { position: absolute; top: 14px; left: 14px; right: -14px; bottom: -14px; border: 2px solid rgba(244,162,97,0.35); border-radius: 6px; z-index: 1; }
+.author-heading { font-family: var(--font-display); font-size: clamp(28px, 3.5vw, 44px); font-weight: 700; color: var(--white); line-height: 1.18; margin-bottom: 18px; }
+.author-heading em { font-style: italic; color: var(--gold); }
+.author-bio { color: rgba(255,255,255,0.72); font-size: 15.5px; line-height: 1.78; margin-bottom: 36px; }
+.stat-box {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px; padding: 22px 20px; text-align: center;
+  transition: background var(--transition), border-color var(--transition);
+}
+.stat-box:hover { background: rgba(255,255,255,0.09); border-color: rgba(244,162,97,0.35); }
+.stat-box .stat-num { font-family: var(--font-display); font-size: 36px; font-weight: 700; color: var(--gold); line-height: 1; display: block; }
+.stat-box .stat-label { font-size: 12px; color: rgba(255,255,255,0.60); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 6px; display: block; }
+
+/* ─── PILLARS ─── */
+.pillars-section { background: var(--white); padding: 90px 0; }
+.pillar-card {
+  background: var(--white); border: 1px solid rgba(11,19,43,0.08);
+  border-top: 4px solid var(--gold); border-radius: 6px; padding: 36px 30px 32px;
+  height: 100%; transition: transform var(--transition), box-shadow var(--transition);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+.pillar-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(11,19,43,0.12); }
+.pillar-icon-wrap {
+  width: 52px; height: 52px; background: rgba(244,162,97,0.12); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 22px;
+}
+.pillar-icon-wrap i { font-size: 22px; color: var(--amber); }
+.pillar-card h3 { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 12px; line-height: 1.25; }
+.pillar-card p { font-size: 15px; color: var(--gray-text); line-height: 1.72; margin-bottom: 20px; }
+.pillar-list { list-style: none; padding: 0; }
+.pillar-list li { font-size: 14px; color: var(--dark-text); padding: 5px 0; display: flex; align-items: flex-start; gap: 9px; }
+.pillar-list li::before { content: ''; display: block; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; margin-top: 8px; flex-shrink: 0; }
+
+/* ─── OFFER / PRICING ─── */
+.pricing-section { background: var(--white); padding: 90px 0; }
+.pricing-box {
+  background: var(--white); border: 1px solid rgba(11,19,43,0.1);
+  border-radius: 12px; padding: 52px 48px; max-width: 660px;
+  margin: 0 auto; box-shadow: 0 30px 80px rgba(11,19,43,0.12);
+  position: relative; overflow: hidden;
+}
+.pricing-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--gold), var(--amber));
+}
+.pricing-tag {
+  display: inline-block; background: rgba(244,162,97,0.13); color: var(--amber);
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 5px 16px; border-radius: 20px; margin-bottom: 22px;
+}
+.value-stack { margin-bottom: 28px; }
+.value-item { display: flex; justify-content: space-between; align-items: center; padding: 13px 0; border-bottom: 1px solid rgba(11,19,43,0.06); }
+.value-item:last-child { border-bottom: none; }
+.value-item-left { display: flex; align-items: flex-start; gap: 12px; }
+.value-item-left i { color: var(--gold); font-size: 16px; width: 20px; text-align: center; margin-top: 2px; flex-shrink: 0; }
+.value-item-name { font-size: 14.5px; color: var(--dark-text); font-weight: 500; }
+.value-item-desc { font-size: 12px; color: var(--gray-mid); margin-top: 2px; }
+.value-item-price { font-size: 13px; color: var(--gray-mid); text-decoration: line-through; font-weight: 400; white-space: nowrap; padding-left: 12px; }
+.pricing-total {
+  background: var(--gray-soft); border-radius: 8px; padding: 18px 24px;
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;
+}
+.pricing-total-label { font-size: 13px; font-weight: 600; color: var(--gray-text); letter-spacing: 0.06em; text-transform: uppercase; }
+.pricing-total-val { font-size: 15px; color: var(--gray-mid); text-decoration: line-through; }
+.price-display { text-align: center; margin-bottom: 28px; }
+.price-was { font-size: 14px; color: var(--gray-mid); text-decoration: line-through; display: block; margin-bottom: 6px; }
+.price-now { font-family: var(--font-display); font-size: 68px; font-weight: 700; color: var(--navy); line-height: 1; }
+.price-now sup { font-size: 26px; vertical-align: super; margin-right: 2px; }
+.price-sub { font-size: 13px; color: var(--gray-text); margin-top: 6px; display: block; }
+.price-save-badge { display: inline-block; background: rgba(231,111,81,0.12); color: var(--amber); font-size: 12px; font-weight: 700; padding: 4px 14px; border-radius: 20px; margin-top: 8px; letter-spacing: 0.06em; }
+.btn-cta-mega {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+  color: var(--white); border: none; padding: 18px 36px; border-radius: 5px;
+  font-family: var(--font-body); font-size: 16px; font-weight: 700;
+  letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  box-shadow: 0 6px 28px rgba(231,111,81,0.45); text-decoration: none;
+  transition: transform var(--transition), box-shadow var(--transition);
+  animation: pulse-cta 3s ease-in-out infinite;
+}
+.btn-cta-mega:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(231,111,81,0.55); color: var(--white); animation: none; }
+@keyframes pulse-cta {
+  0%, 100% { box-shadow: 0 6px 28px rgba(231,111,81,0.45); }
+  50% { box-shadow: 0 6px 38px rgba(231,111,81,0.65); }
+}
+.trust-badges { display: flex; justify-content: center; gap: 20px; margin-top: 22px; flex-wrap: wrap; }
+.trust-badge { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--gray-text); }
+.trust-badge i { color: var(--gold); font-size: 15px; }
+
+/* ─── LEAD CAPTURE (replaces testimonials) ─── */
+.lead-section { background: var(--navy); padding: 90px 0; position: relative; overflow: hidden; }
+.lead-section::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 70% 40%, rgba(244,162,97,0.10) 0%, transparent 60%);
+  pointer-events: none;
+}
+.lead-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px; padding: 48px 44px; max-width: 620px; margin: 0 auto;
+  backdrop-filter: blur(4px);
+}
+.lead-heading { font-family: var(--font-display); font-size: clamp(26px,3vw,40px); font-weight: 700; color: var(--white); margin-bottom: 12px; line-height: 1.25; }
+.lead-heading em { font-style: italic; color: var(--gold); }
+.lead-sub { font-size: 15.5px; color: rgba(255,255,255,0.68); line-height: 1.72; margin-bottom: 30px; }
+.lead-benefits { list-style: none; padding: 0; margin-bottom: 30px; }
+.lead-benefits li { font-size: 14.5px; color: rgba(255,255,255,0.80); padding: 6px 0; display: flex; align-items: flex-start; gap: 10px; }
+.lead-benefits li i { color: var(--gold); font-size: 14px; margin-top: 3px; flex-shrink: 0; }
+.lead-form-group { margin-bottom: 14px; }
+.lead-form-group input {
+  width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.18); border-radius: 5px;
+  font-family: var(--font-body); font-size: 15px; color: var(--white);
+  transition: border-color var(--transition), background var(--transition);
+  outline: none;
+}
+.lead-form-group input::placeholder { color: rgba(255,255,255,0.38); }
+.lead-form-group input:focus { border-color: var(--gold); background: rgba(255,255,255,0.10); }
+.btn-lead-submit {
+  width: 100%; padding: 16px 28px; background: linear-gradient(135deg, var(--gold), var(--amber));
+  border: none; border-radius: 5px; font-family: var(--font-body); font-size: 15px;
+  font-weight: 700; color: var(--white); letter-spacing: 0.06em; text-transform: uppercase;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+  box-shadow: 0 4px 20px rgba(231,111,81,0.4); transition: transform var(--transition), box-shadow var(--transition);
+  margin-top: 6px;
+}
+.btn-lead-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(231,111,81,0.55); }
+.lead-privacy { font-size: 12px; color: rgba(255,255,255,0.35); text-align: center; margin-top: 14px; }
+.lead-success {
+  display: none; text-align: center; padding: 32px 20px;
+}
+.lead-success i { font-size: 48px; color: var(--gold); margin-bottom: 16px; display: block; }
+.lead-success h4 { font-family: var(--font-display); font-size: 26px; color: var(--white); margin-bottom: 10px; }
+.lead-success p { font-size: 15px; color: rgba(255,255,255,0.65); }
+
+/* ─── FAQ ─── */
+.faq-section { background: var(--offwhite); padding: 90px 0; }
+.accordion-item { border: 1px solid rgba(11,19,43,0.08) !important; border-radius: 6px !important; overflow: hidden; margin-bottom: 10px; background: var(--white) !important; }
+.accordion-button { font-family: var(--font-body); font-size: 15.5px; font-weight: 600; color: var(--navy) !important; background: var(--white) !important; padding: 20px 24px; border: none !important; box-shadow: none !important; }
+.accordion-button:not(.collapsed) { color: var(--amber) !important; background: var(--white) !important; }
+.accordion-button::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%230B132B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M2 5l6 6 6-6'/%3E%3C/svg%3E") !important;
+}
+.accordion-body { padding: 4px 24px 22px; font-size: 15px; color: var(--gray-text); line-height: 1.76; }
+
+/* ─── FOOTER ─── */
+footer { background: var(--navy); padding: 44px 0 28px; }
+.footer-logo { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+.footer-logo span { color: var(--gold); }
+.footer-tagline { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 0; }
+.footer-links { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; justify-content: flex-end; }
+.footer-links a { font-size: 12.5px; color: rgba(255,255,255,0.45); text-decoration: none; transition: color var(--transition); }
+.footer-links a:hover { color: var(--gold); }
+.footer-divider { border-color: rgba(255,255,255,0.08) !important; margin: 24px 0 20px; }
+.footer-disclaimer { font-size: 11.5px; color: rgba(255,255,255,0.3); line-height: 1.65; text-align: center; }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.7s ease forwards; }
+.fade-up-1 { animation-delay: 0.1s; opacity: 0; }
+.fade-up-2 { animation-delay: 0.25s; opacity: 0; }
+.fade-up-3 { animation-delay: 0.4s; opacity: 0; }
+.fade-up-4 { animation-delay: 0.55s; opacity: 0; }
+
+@media (max-width: 768px) {
+  .hero-section { padding: 50px 0 36px; }
+  .hero-heading { font-size: 34px; }
+  .book-stage { width: 220px; }
+  .pricing-box { padding: 32px 20px; }
+  .price-now { font-size: 52px; }
+  .footer-links { justify-content: flex-start; margin-top: 16px; }
+  .author-photo { width: 100%; height: 260px; }
+  .announce-timer { display: none; }
+  .lead-card { padding: 32px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     ANNOUNCEMENT BAR
+═══════════════════════════════════════ -->
+<div class="announce-bar">
+  <p>
+    <i class="fa-solid fa-sun" style="font-size:11px; margin-right:6px;"></i>
+    <span>Agwu Chukwudi</span> &mdash; 10+ Years Renewable Energy Expert.
+    Buy Today &amp; Get a <span>Free Personal Solar Consultation</span>.
+    <span class="announce-timer">
+      <i class="fa-regular fa-clock" style="font-size:11px;"></i>
+      <span id="countdown">06:24:38</span>
+    </span>
+  </p>
+</div>
+
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center gy-5">
+      <!-- LEFT -->
+      <div class="col-lg-6">
+        <div class="pre-headline fade-up fade-up-1">A Practical Guide to Uninterrupted Power Supply</div>
+        <h1 class="hero-heading fade-up fade-up-2">
+          24HR <em>Power Supply</em><br>With Solar.<br>No NEPA. No Generator.<br>No Compromise.
+        </h1>
+        <p class="hero-subhead fade-up fade-up-3">
+          The step-by-step guide that shows Nigerian homes and businesses how to design, install, and manage a complete solar power system that keeps your lights, appliances, and business running — 24 hours a day, every day.
+        </p>
+        <div class="d-flex flex-wrap gap-3 fade-up fade-up-4">
+          <a href="#pricing" class="btn-solar-primary">
+            <i class="fa-solid fa-bolt-lightning"></i>
+            Get the Book — ₦4,999
+          </a>
+          <a href="#inside" class="btn-solar-outline">
+            <i class="fa-regular fa-file-lines"></i>
+            See What's Inside
+          </a>
+        </div>
+        <div class="d-flex align-items-center gap-3 mt-4" style="font-size:13px; color:var(--gray-text); flex-wrap:wrap;">
+          <span><i class="fa-solid fa-phone" style="color:var(--gold); font-size:12px;"></i>&nbsp;Free 1-on-1 Consultation Included</span>
+          <span style="color:var(--gray-mid);">|</span>
+          <span><i class="fa-solid fa-download" style="color:var(--gold); font-size:12px;"></i>&nbsp;Instant PDF Download</span>
+        </div>
+      </div>
+
+      <!-- RIGHT — BOOK COVER -->
+      <div class="col-lg-6 d-flex justify-content-center">
+        <div class="book-cover-wrap fade-up fade-up-3">
+          <div class="book-stage">
+            <!-- <div class="book-spine"></div> -->
+            <div class="book-main">
+              <img src="24 hour power supply book cover.png" alt=""class="book-cover-img" /> 
+              <!-- <div class="book-cover-content">
+                <div class="book-eyebrow">Practical Guide &nbsp;|&nbsp; Homes &amp; Offices</div>
+                 <div>
+                   <div class="book-title-cover">
+                    24HR<br><span>Power Supply</span><br>With Solar
+                  </div> 
+                  <div class="book-subtitle-cover">A Practical Guide to Uninterrupted Power Supply</div>
+                </div>
+                <div class="book-author-cover">Agwu Chukwudi</div>
+              </div> -->
+              <div class="book-badge-cover">
+                <span class="badge-top">Only</span>
+                <span class="badge-mid">₦4,999</span>
+                <span class="badge-bot">+ Free Call</span>
+              </div>
+            </div>
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     VIDEO SECTION
+═══════════════════════════════════════ -->
+<section class="video-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-eyebrow d-inline-flex">Watch This First</div>
+      <h2 class="section-heading">A Message From <em>the Author</em></h2>
+      <p class="section-sub" style="margin-bottom:0;">Agwu Chukwudi explains exactly what you will gain from this book and why it was written specifically for the Nigerian energy reality.</p>
+    </div>
+    <div class="video-wrapper">
+      <!--
+        INSTRUCTIONS FOR YOU:
+        Replace the src below with your actual YouTube or Vimeo embed URL.
+        Example YouTube: https://www.youtube.com/embed/YOUR_VIDEO_ID
+        Example Vimeo:   https://player.vimeo.com/video/YOUR_VIDEO_ID
+        Remove the placeholder div and uncomment the iframe once your URL is ready.
+      -->
+      <div class="video-placeholder" id="videoPlaceholder" onclick="loadVideo()">
+        <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+        <span class="video-caption">Click to watch — More about What's in the book for you</span>
+      </div>
+      <!-- PASTE YOUR VIDEO EMBED HERE: -->
+      <!-- <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1" allowfullscreen allow="autoplay"></iframe> -->
+    </div>
+    <p style="text-align:center; font-size:13px; color:var(--gray-mid); margin-top:16px;">
+      <i class="fa-regular fa-clock" style="margin-right:4px;"></i> ~5 minutes &bull; No sound required &bull; Subtitles available
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     AUTHOR CREDENTIALS
+═══════════════════════════════════════ -->
+<section class="author-section">
+  <div class="container" style="position:relative; z-index:2;">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-4 d-flex justify-content-center">
+        <div class="author-photo-wrap">
+          <img src="my passport.jpeg" alt="Agwu Chukwudi — Author" class="author-photo"/>
+          <div class="author-photo-frame"></div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="section-eyebrow" style="color:var(--gold);">Meet the Author</div>
+        <h2 class="author-heading">Agwu <em>Chukwudi</em></h2>
+        <p class="author-bio">
+          Agwu Chukwudi has spent over a decade designing and installing solar energy systems for Nigerian homes, offices, and commercial properties. He brings a rare combination of hands-on installation experience and deep energy management expertise — understanding not just how solar systems are built, but how they must be managed to deliver true, reliable 24-hour power in the Nigerian context. His 15+ years of combined experience, including 5 years specialising in energy management and system optimisation, is condensed into this single, practical guide.
+        </p>
+        <div class="row g-3">
+          <div class="col-4">
+            <div class="stat-box">
+              <span class="stat-num">10+</span>
+              <span class="stat-label">Years in<br>Renewable Energy</span>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="stat-box">
+              <span class="stat-num">5+</span>
+              <span class="stat-label">Years Energy<br>Management</span>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="stat-box">
+              <span class="stat-num">24/7</span>
+              <span class="stat-label">Power Solutions<br>for Nigeria</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     3 CORE PILLARS — WHAT'S INSIDE
+═══════════════════════════════════════ -->
+<section class="pillars-section" id="inside">
+  <div class="container">
+    <div class="text-center">
+      <div class="section-eyebrow d-inline-flex">What's Inside the Book</div>
+      <h2 class="section-heading">Three Frameworks That Give You <em>Real,<br>Uninterrupted Power</em></h2>
+      <p class="section-sub">Each section is built specifically for the Nigerian home, office, and small business reality — practical, tested, and immediately applicable.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="pillar-card">
+          <div class="pillar-icon-wrap"><i class="fa-solid fa-calculator"></i></div>
+          <h3>Load Calculation &amp; System Sizing</h3>
+          <p>Know exactly what size of solar system your home or office truly needs — and stop paying for equipment you don't.</p>
+          <ul class="pillar-list">
+            <li>Step-by-step appliance wattage profiling</li>
+            <li>Daily energy consumption calculation</li>
+            <li>Correct inverter and battery sizing</li>
+            <li>How many panels you actually need</li>
+            <li>Budget planning for different household sizes</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="pillar-card">
+          <div class="pillar-icon-wrap"><i class="fa-solid fa-pen-ruler"></i></div>
+          <h3>Choosing the Right Equipment</h3>
+          <p>Navigate the Nigerian solar market without being misled — know which panels, batteries, and inverters are worth your money.</p>
+          <ul class="pillar-list">
+            <li>Monocrystalline vs polycrystalline panels</li>
+            <li>Lead-acid, lithium, gel, AGM & tubular battery guide</li>
+            <li>Off-grid vs hybrid inverter selection</li>
+            <li>MPPT charge controller selection guide</li>
+            <li>What to avoid when buying in Nigeria</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="pillar-card">
+          <div class="pillar-icon-wrap"><i class="fa-solid fa-sliders"></i></div>
+          <h3>Energy Management for 24HR Power</h3>
+          <p>The secret to true 24-hour power isn't just big batteries — it's knowing how to use your energy wisely day and night.</p>
+          <ul class="pillar-list">
+            <li>Free energy-saving habits that extend battery life</li>
+            <li>Smart devices: plugs, sensors, and automation</li>
+            <li>Real naira savings calculations for your home</li>
+            <li>Solar security lights vs NEPA cost comparison</li>
+            <li>Managing power for businesses and offices</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     OFFER / PRICING
+═══════════════════════════════════════ -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-eyebrow d-inline-flex">The Complete Offer</div>
+      <h2 class="section-heading">Everything You Need to Have <em>Power<br>Every Single Day.</em></h2>
+    </div>
+
+    <div class="pricing-box">
+      <div class="text-center">
+        <div class="pricing-tag">&#127881; Special Launch Bundle</div>
+      </div>
+
+      <div class="value-stack">
+
+        <!-- Item 1 -->
+        <div class="value-item">
+          <div class="value-item-left">
+            <i class="fa-solid fa-book-open"></i>
+            <div>
+              <div class="value-item-name">24HR Power Supply With Solar — Complete PDF Book</div>
+              <div class="value-item-desc">Full practical guide &bull; Instant download from Selar &bull; Read on any device</div>
+            </div>
+          </div>
+          <span class="value-item-price">₦9,999</span>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="value-item">
+          <div class="value-item-left">
+            <i class="fa-solid fa-phone-volume"></i>
+            <div>
+              <div class="value-item-name">FREE 1-on-1 Personal Solar Consultation Call</div>
+              <div class="value-item-desc">30-minute session with Agwu Chukwudi &bull; Tailored to your exact home or office needs</div>
+            </div>
+          </div>
+          <span class="value-item-price">₦15,000</span>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="value-item">
+          <div class="value-item-left">
+            <i class="fa-solid fa-table-cells"></i>
+            <div>
+              <div class="value-item-name">Solar Load Calculator Spreadsheet</div>
+              <div class="value-item-desc">Pre-built Excel tool &bull; Enter your appliances and get your system size instantly</div>
+            </div>
+          </div>
+          <span class="value-item-price">₦5,000</span>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="value-item">
+          <div class="value-item-left">
+            <i class="fa-solid fa-list-check"></i>
+            <div>
+              <div class="value-item-name">Equipment Buying Checklist for the Nigerian Market</div>
+              <div class="value-item-desc">Know exactly what to ask before buying any solar equipment in Nigeria</div>
+            </div>
+          </div>
+          <span class="value-item-price">₦3,000</span>
+        </div>
+
+        <!-- Item 5 -->
+        <div class="value-item">
+          <div class="value-item-left">
+            <i class="fa-solid fa-bolt-lightning"></i>
+            <div>
+              <div class="value-item-name">Energy Management Action Plan</div>
+              <div class="value-item-desc">Simple daily checklist to extend battery life and maximise your 24-hour power</div>
+            </div>
+          </div>
+          <span class="value-item-price">₦2,000</span>
+        </div>
+
+        <!-- Item 6 -->
+        <div class="value-item">
+          <div class="value-item-left">
+            <i class="fa-regular fa-envelope"></i>
+            <div>
+              <div class="value-item-name">Lifetime Email Support Access</div>
+              <div class="value-item-desc">Ask questions about your specific solar setup anytime after purchase</div>
+            </div>
+          </div>
+          <span class="value-item-price">Priceless</span>
+        </div>
+
+      </div>
+
+      <div class="pricing-total">
+        <span class="pricing-total-label">Total Bundle Value</span>
+        <span class="pricing-total-val">₦34,999+</span>
+      </div>
+
+      <div class="price-display">
+        <span class="price-was">Total value: ₦34,999</span>
+        <div class="price-now"><sup>₦</sup>4,999</div>
+        <span class="price-sub">One-time payment &bull; No subscription &bull; Instant PDF download via Selar</span>
+        <div><span class="price-save-badge">YOU SAVE ₦30,000 &nbsp;— 86% OFF</span></div>
+      </div>
+
+      <a href="https://selar.com/6y76x6t713" target="_blank" class="btn-cta-mega">
+        <i class="fa-solid fa-bolt-lightning"></i>
+        Buy Now on Selar — ₦4,999
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+
+      <div class="trust-badges">
+        <div class="trust-badge"><i class="fa-solid fa-lock"></i> Secure Checkout via Selar</div>
+        <div class="trust-badge"><i class="fa-solid fa-download"></i> Instant PDF Download</div>
+        <div class="trust-badge"><i class="fa-solid fa-phone"></i> Free Consultation Included</div>
+        <div class="trust-badge"><i class="fa-solid fa-credit-card"></i> Pay with Card or Transfer</div>
+      </div>
+
+      <div style="background:rgba(244,162,97,0.08); border:1px solid rgba(244,162,97,0.25); border-radius:8px; padding:16px 20px; margin-top:24px; text-align:center;">
+        <p style="font-size:13.5px; color:var(--navy); margin:0; line-height:1.65;">
+          <i class="fa-solid fa-circle-info" style="color:var(--gold); margin-right:6px;"></i>
+          <strong>How you get your free consultation:</strong> After purchase, fill in the short form on the next page with your name and email. Agwu will personally contact you to schedule your 1-on-1 solar session within 48 hours.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     LEAD CAPTURE — FREE CONSULTATION
+     (replaces testimonials carousel)
+═══════════════════════════════════════ -->
+<section class="lead-section" id="consultation">
+  <div class="container" style="position:relative; z-index:2;">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        <div class="text-center mb-4">
+          <div class="section-eyebrow" style="justify-content:center;">Free Solar Consultation</div>
+          <h2 class="lead-heading text-center" style="margin-bottom:8px;">Not Ready to Buy Yet?<br><em>Reserve Your Free Consultation</em></h2>
+          <p style="font-size:15px; color:rgba(255,255,255,0.60); margin-bottom:0;">Drop your name and email. Agwu will send you a personalised solar recommendation for your home or office — at no cost.</p>
+        </div>
+
+        <div class="lead-card" id="leadFormWrap">
+          <ul class="lead-benefits">
+            <li><i class="fa-solid fa-check-circle"></i> Get a personalised solar system recommendation for your specific property</li>
+            <li><i class="fa-solid fa-check-circle"></i> Find out exactly how much 24-hour power will cost you to set up</li>
+            <li><i class="fa-solid fa-check-circle"></i> Receive honest guidance from a 10-year industry professional — for free</li>
+            <li><i class="fa-solid fa-check-circle"></i> No sales pressure. No obligation. Just clarity on your solar options</li>
+          </ul>
+          <div id="leadFormBody">
+            <div class="lead-form-group">
+              <input type="text" id="leadName" placeholder="Your Full Name" autocomplete="name" />
+            </div>
+            <div class="lead-form-group">
+              <input type="email" id="leadEmail" placeholder="Your Email Address" autocomplete="email" />
+            </div>
+            <div class="lead-form-group">
+              <input type="tel" id="leadPhone" placeholder="WhatsApp / Phone Number (optional)" autocomplete="tel" />
+            </div>
+            <button class="btn-lead-submit" onclick="submitLeadForm()">
+              <i class="fa-solid fa-paper-plane"></i>
+              Request My Free Consultation
+            </button>
+            <p class="lead-privacy"><i class="fa-solid fa-lock" style="margin-right:4px;"></i>Your details are private. We will never spam or share your information.</p>
+          </div>
+          <div class="lead-success" id="leadSuccess">
+            <i class="fa-solid fa-circle-check"></i>
+            <h4>You're on the list!</h4>
+            <p>Thank you. Agwu will reach out to you within 24–48 hours to schedule your free personalised solar consultation. Check your inbox — and your spam folder just in case.</p>
+          </div>
+        </div>
+
+        <p style="text-align:center; font-size:13px; color:rgba(255,255,255,0.35); margin-top:20px;">
+          Already purchased the book? <a href="#pricing" style="color:var(--gold); text-decoration:none;">Your free consultation is automatically included</a> — you'll receive instructions after checkout.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FAQ
+═══════════════════════════════════════ -->
+<section class="faq-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-eyebrow d-inline-flex">Questions &amp; Answers</div>
+      <h2 class="section-heading">Everything You <em>Need to Know</em></h2>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="accordion" id="faqAccordion">
+
+          <div class="accordion-item">
+            <h3 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                Is this book for complete beginners or do I need a technical background?
+              </button>
+            </h3>
+            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                The book is written in plain, everyday English — no engineering background needed. Whether you are a homeowner, office manager, small business owner, or someone thinking about solar for the first time, the guide walks you through everything step by step, from the very basics all the way through to running a full 24-hour solar system.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                How do I receive the book after I pay?
+              </button>
+            </h3>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                The book is sold through <strong>Selar</strong>, Nigeria's trusted digital product store. Once your payment is confirmed — by card or bank transfer — Selar will give you an instant download link for the PDF. You can access it on your phone, tablet, laptop, or computer immediately after purchase. No waiting, no delivery.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                How does the free 1-on-1 consultation work?
+              </button>
+            </h3>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                After your purchase on Selar, you will be directed to a short form where you enter your name, email address, and a brief description of your solar needs (home, office, number of rooms, etc.). Agwu Chukwudi will personally review your information and contact you via email or WhatsApp within 48 hours to schedule a 30-minute consultation call — completely free, and tailored to your specific situation.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                Does the book cover offices and small businesses, or just homes?
+              </button>
+            </h3>
+            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Both. The book includes dedicated sections and worked examples for residential homes, offices, and small business premises. The load calculation framework and equipment selection guidance applies to any property type, and the energy management chapter includes specific advice for business settings where power reliability is critical for productivity.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                Can I pay by bank transfer instead of card?
+              </button>
+            </h3>
+            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Yes. Selar supports all major Nigerian payment methods including debit cards (Visa, Mastercard), bank transfers, and USSD. Simply choose your preferred option at checkout and your download link will be delivered immediately after payment confirmation.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                What if I already have a generator — is solar still worth it for me?
+              </button>
+            </h3>
+            <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Absolutely yes. The book includes a detailed cost comparison showing how much Nigerians spend on fuel, generator maintenance, and NEPA bills annually versus the one-time investment in solar. For most homes and offices, solar pays for itself within 12–24 months — and then saves you money every single day for 15–30 years. The book also shows you how solar and generators can work together during the transition period.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FINAL CTA BAND
+═══════════════════════════════════════ -->
+<div style="background: linear-gradient(135deg, var(--navy) 0%, #1C2E4A 100%); padding: 80px 0; text-align:center; position:relative; overflow:hidden;">
+  <div style="position:absolute; inset:0; background: radial-gradient(circle at 30% 50%, rgba(244,162,97,0.12) 0%, transparent 60%); pointer-events:none;"></div>
+  <div class="container" style="position:relative; z-index:2;">
+    <p style="font-family:var(--font-body); font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); margin-bottom:16px;">Make NEPA Irrelevant — Starting Today</p>
+    <h2 style="font-family:var(--font-display); font-size:clamp(28px, 4vw, 50px); font-weight:700; color:var(--white); margin-bottom:16px; line-height:1.2;">The Sun Shines Every Day in Nigeria.<br>Are You <em style="color:var(--gold);">Using It?</em></h2>
+    <p style="font-size:16px; color:rgba(255,255,255,0.65); max-width:500px; margin:0 auto 36px; line-height:1.7;">For ₦4,999 — less than a tank of fuel — you can have the complete roadmap to 24-hour power, plus a free personal consultation with the author himself.</p>
+    <a href="https://selar.co/YOUR_BOOK_LINK" target="_blank" class="btn-solar-primary" style="font-size:16px; padding:18px 40px; display:inline-flex; margin:0 auto;">
+      <i class="fa-solid fa-bolt-lightning"></i>
+      Yes — Get the Book for ₦4,999
+    </a>
+    <p style="font-size:13px; color:rgba(255,255,255,0.40); margin-top:18px;">Instant PDF download via Selar &bull; Free 1-on-1 consultation included &bull; Works on all devices</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <div class="footer-logo">24HR <span>Power</span> Supply</div>
+        <p class="footer-tagline">By Agwu Chukwudi &copy; 2025. All rights reserved.</p>
+      </div>
+      <div class="col-md-6 mt-3 mt-md-0">
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">Refund Policy</a>
+          <a href="mailto:contact@yourdomain.com">Contact</a>
+        </div>
+      </div>
+    </div>
+    <hr class="footer-divider"/>
+    <p class="footer-disclaimer">
+      <strong style="color:rgba(255,255,255,0.45);">Disclaimer:</strong> The information provided in this book is for educational and informational purposes only. Results from solar installations will vary based on your property size, appliance usage, geographic location, and system quality. Always engage a qualified, licensed electrician for any electrical installation work. The author and publisher are not liable for any direct or indirect outcomes from the application of the information in this guide. This website is not affiliated with any government body, electricity distribution company, or product manufacturer.
+    </p>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+// ── Countdown Timer ──
+(function() {
+  var endTime = new Date();
+  endTime.setHours(23, 59, 59, 0);
+  function updateTimer() {
+    var now = new Date();
+    var diff = endTime - now;
+    if (diff < 0) diff = 0;
+    var h = Math.floor(diff / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    var el = document.getElementById('countdown');
+    if (el) el.textContent = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }
+  updateTimer();
+  setInterval(updateTimer, 1000);
+})();
+
+// ── Video placeholder click ──
+function loadVideo() {
+  // Replace the URL below with your actual YouTube/Vimeo embed URL
+  var videoUrl = 'https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1';
+  var wrapper = document.querySelector('.video-wrapper');
+  var iframe = document.createElement('iframe');
+  iframe.src = videoUrl;
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.setAttribute('allow', 'autoplay');
+  iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+  wrapper.innerHTML = '';
+  wrapper.appendChild(iframe);
+}
+
+// ── Lead form submission ──
+function submitLeadForm() {
+  var name  = document.getElementById('leadName').value.trim();
+  var email = document.getElementById('leadEmail').value.trim();
+  if (!name) { alert('Please enter your full name.'); return; }
+  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+
+  // ── INTEGRATION POINT ──
+  // Option 1 (Recommended): Connect to Mailchimp, ConvertKit, or Brevo via their embed form or API.
+  // Option 2: Use Formspree — replace YOUR_FORM_ID below and uncomment the fetch block.
+  // Option 3: Google Forms — replace the action URL on your own Google Form hidden fields.
+
+  /*
+  fetch('https://formspree.io/f/YOUR_FORM_ID', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({ name: name, email: email, phone: document.getElementById('leadPhone').value.trim() })
+  }).then(function(r) {
+    if (r.ok) showLeadSuccess();
+    else alert('Something went wrong. Please try again.');
+  }).catch(function() { alert('Network error. Please try again.'); });
+  */
+
+  // Default: show success immediately (replace with real integration above)
+  showLeadSuccess();
+}
+
+function showLeadSuccess() {
+  document.getElementById('leadFormBody').style.display = 'none';
+  document.getElementById('leadSuccess').style.display = 'block';
+}
+
+// ── Scroll-triggered fade-in ──
+(function() {
+  if (!('IntersectionObserver' in window)) return;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.style.animation = 'fadeUp 0.7s ease forwards';
+        entry.target.style.opacity = '1';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.pillar-card, .stat-box, .pricing-box, .accordion-item, .lead-card').forEach(function(el) {
+    el.style.opacity = '0';
+    observer.observe(el);
+  });
+})();
+</script>
+</body>
+</html>
